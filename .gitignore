@@ -34,6 +34,12 @@ Thumbs.db
 *.tiff
 stdout.processed.*
 
+# Next.js auto-generated
+next-env.d.ts
+
+# Accidental duplicates in api dir
+src/pages/api/server.py
+
 # Generated project storage - too many test artifacts
 storage/projects/
 
