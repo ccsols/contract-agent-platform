@@ -45,6 +45,25 @@ const CONTRACT_ABI = {
   ]
 };
 
+// 跨上下文复制工具（兼容 HTTP + HTTPS）
+function copyToClipboard(text: string): void {
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    navigator.clipboard.writeText(text).catch(() => {});
+    return;
+  }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  } catch (e) {}
+}
+
 export default function ContractDemoPage() {
   const [contractState, setContractState] = useState<ContractState | null>(null);
   const [loading, setLoading] = useState(true);
@@ -184,7 +203,7 @@ export default function ContractDemoPage() {
               {contractState?.status || 'UNKNOWN'}
             </span>
             <button
-              onClick={() => navigator.clipboard.writeText(window.location.href)}
+              onClick={() => copyToClipboard(window.location.href)}
               className="px-3 py-1 text-sm bg-gray-800 hover:bg-gray-700 rounded border border-gray-700"
             >
               复制链接

@@ -732,7 +732,7 @@ function DemoView({ projectId, demoUrl, onReset, allArtifacts }: {
   const [activeTab, setActiveTab] = useState<ArtifactTab>('demo');
   const [fetching, setFetching] = useState(false);
   const setAllArtifacts = useStore((s) => s.setAllArtifacts);
-  const copyLink = () => { navigator.clipboard.writeText(demoUrl.startsWith('http') ? demoUrl : `${window.location.origin}${demoUrl}`); };
+  const copyLink = () => { copyToClipboard(demoUrl.startsWith('http') ? demoUrl : `${window.location.origin}${demoUrl}`); };
 
   // 进入 DemoView 时自动拉取产物（处理来自历史记录和新生成的场景）
   useEffect(() => {
@@ -903,10 +903,32 @@ function CodeFilesPanel({ files, codeType = 'solidity' }: { files?: { filename: 
   );
 }
 
+// 跨上下文复制工具（兼容 HTTP + HTTPS）
+function copyToClipboard(text: string): Promise<void> {
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    return navigator.clipboard.writeText(text);
+  }
+  // Fallback: 创建临时 textarea
+  return new Promise((resolve, reject) => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      resolve();
+    } catch (e) { reject(e); }
+  });
+}
+
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   const handleClick = useCallback(() => {
-    navigator.clipboard.writeText(text).then(() => {
+    copyToClipboard(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }).catch(() => {});

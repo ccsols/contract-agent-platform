@@ -186,12 +186,33 @@ export default function SolidityViewer({
   const [showLineNumbers, setShowLineNumbers] = useState(initialShowLineNumbers);
   const [copied, setCopied] = useState(false);
 
+  // 跨上下文复制工具（兼容 HTTP + HTTPS）
+  const copyToClipboard = useCallback((text: string) => {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise<void>((resolve, reject) => {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        resolve();
+      } catch (e) { reject(e); }
+    });
+  }, []);
+
   const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(code).then(() => {
+    copyToClipboard(code).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }).catch(() => {});
-  }, [code]);
+  }, [code, copyToClipboard]);
 
   // 按行分割
   const lines = code.split('\n');
