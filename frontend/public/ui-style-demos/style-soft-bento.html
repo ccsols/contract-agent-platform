@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>柔感便当格 · UI 风格预览</title>
+    <style>
+      :root {
+        --bg: #f3f2ef;
+        --surface: #ffffff;
+        --text: #141414;
+        --muted: rgba(20, 20, 20, 0.58);
+        --shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+        --ring: rgba(15, 23, 42, 0.06);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: radial-gradient(900px 500px at 10% 0%, rgba(255, 255, 255, 0.75), transparent 60%),
+          radial-gradient(700px 420px at 100% 10%, rgba(210, 230, 255, 0.55), transparent 55%), var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      }
+      .shell {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: clamp(22px, 4vw, 40px) clamp(16px, 4vw, 26px) 56px;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #111827, #334155);
+        box-shadow: var(--shadow);
+      }
+      .header-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .chip {
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(20, 20, 20, 0.72);
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--ring);
+        background: rgba(255, 255, 255, 0.65);
+        backdrop-filter: blur(10px);
+      }
+      .btn {
+        border: 0;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 13px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: #111827;
+        color: #fff;
+        box-shadow: var(--shadow);
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .bento {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--ring);
+        border-radius: 22px;
+        box-shadow: var(--shadow);
+        padding: clamp(16px, 3vw, 22px);
+      }
+      .hero {
+        grid-column: span 7;
+        min-height: 240px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 14px;
+      }
+      @media (max-width: 900px) {
+        .hero {
+          grid-column: span 12;
+        }
+      }
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(28px, 4.2vw, 44px);
+        line-height: 1.05;
+        letter-spacing: -0.035em;
+      }
+      .hero p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+        font-size: 15px;
+        max-width: 52ch;
+      }
+      .mini {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .pill {
+        font-size: 12px;
+        font-weight: 700;
+        color: rgba(17, 24, 39, 0.72);
+        padding: 8px 10px;
+        border-radius: 999px;
+        background: rgba(17, 24, 39, 0.06);
+      }
+      .stat {
+        grid-column: span 5;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        min-height: 240px;
+      }
+      @media (max-width: 900px) {
+        .stat {
+          grid-column: span 12;
+        }
+      }
+      .tile {
+        border-radius: 18px;
+        border: 1px solid var(--ring);
+        background: linear-gradient(180deg, #ffffff, #fafafa);
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .tile .k {
+        font-size: 12px;
+        color: rgba(20, 20, 20, 0.55);
+        font-weight: 600;
+      }
+      .tile .v {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+      }
+      .wide {
+        grid-column: span 8;
+      }
+      @media (max-width: 900px) {
+        .wide {
+          grid-column: span 12;
+        }
+      }
+      .wide h2 {
+        margin: 0 0 10px;
+        font-size: 16px;
+        letter-spacing: -0.02em;
+      }
+      .cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      @media (max-width: 560px) {
+        .cols {
+          grid-template-columns: 1fr;
+        }
+      }
+      .cols p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+      .tall {
+        grid-column: span 4;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      @media (max-width: 900px) {
+        .tall {
+          grid-column: span 12;
+        }
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 12px;
+        border-radius: 16px;
+        border: 1px solid var(--ring);
+        background: rgba(255, 255, 255, 0.65);
+      }
+      .icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        background: rgba(17, 24, 39, 0.06);
+        flex: 0 0 auto;
+      }
+      .row strong {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
+      .row span {
+        font-size: 12px;
+        color: rgba(20, 20, 20, 0.55);
+        line-height: 1.45;
+      }
+      .back {
+        margin-top: 16px;
+        font-size: 13px;
+        color: rgba(20, 20, 20, 0.55);
+      }
+      .back a {
+        color: rgba(20, 20, 20, 0.78);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header>
+        <div class="brand"><span class="mark" aria-hidden="true"></span> Contract Agent</div>
+        <div class="header-actions">
+          <span class="chip">本周：审查 24 份</span>
+          <button class="btn" type="button">新建项目</button>
+        </div>
+      </header>
+      <main class="bento" aria-label="便当格布局示例">
+        <section class="card hero">
+          <div>
+            <h1>用温和界面承载高强度工作流</h1>
+            <p>
+              柔感便当格（Bento）把信息拆成大小不一的圆角卡片：像便当分区一样清晰，但整体仍然柔软、干净。适合效率工具、知识库、以及希望“耐看三年”的日常产品皮肤。
+            </p>
+          </div>
+          <div class="mini">
+            <span class="pill">低噪背景 · 轻阴影 · 大圆角</span>
+            <span class="pill">信息密度：中</span>
+          </div>
+        </section>
+        <section class="stat" aria-label="统计">
+          <div class="tile">
+            <div class="k">进行中</div>
+            <div class="v">6</div>
+          </div>
+          <div class="tile">
+            <div class="k">已完成</div>
+            <div class="v">128</div>
+          </div>
+          <div class="tile" style="grid-column: span 2">
+            <div class="k">平均风险分</div>
+            <div class="v" style="font-size: 22px">偏低（健康）</div>
+          </div>
+        </section>
+        <section class="card wide">
+          <h2>为什么它“现代但不刺眼”</h2>
+          <div class="cols">
+            <p>
+              阴影很轻、边界很淡，靠留白与圆角分组；这会让长任务页面更不容易疲劳，也更适合移动端与桌面端共用一套视觉语言。
+            </p>
+            <p>
+              建议搭配克制的品牌色：主色用于按钮与少量高亮，其它区域保持中性灰白，避免每个格子都上色。
+            </p>
+          </div>
+        </section>
+        <section class="card tall" aria-label="清单">
+          <div class="row">
+            <span class="icon" aria-hidden="true"></span>
+            <div>
+              <strong>今日优先</strong><span>NDA：附件条款需对齐模板</span>
+            </div>
+          </div>
+          <div class="row">
+            <span class="icon" aria-hidden="true"></span>
+            <div>
+              <strong>协作提醒</strong><span>法务已在“付款”段落留下评论</span>
+            </div>
+          </div>
+          <div class="row">
+            <span class="icon" aria-hidden="true"></span>
+            <div>
+              <strong>自动化</strong><span>导出 PDF 已排队（预计 30s）</span>
+            </div>
+          </div>
+        </section>
+      </main>
+      <p class="back"><a href="./index.html">← 返回风格索引</a></p>
+    </div>
+  </body>
+</html>

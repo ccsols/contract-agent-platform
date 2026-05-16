@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UI 风格预览 · 索引</title>
+    <style>
+      :root {
+        --bg: #0b0c10;
+        --card: #14161c;
+        --text: #e8eaef;
+        --muted: #8b93a7;
+        --accent: #6c8cff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+          "Apple Color Emoji", "Segoe UI Emoji";
+        background: radial-gradient(1200px 600px at 20% -10%, #1a2240 0%, transparent 55%),
+          radial-gradient(900px 500px at 100% 0%, #2a1035 0%, transparent 50%), var(--bg);
+        color: var(--text);
+        padding: clamp(24px, 4vw, 48px);
+      }
+      .wrap {
+        max-width: 880px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: clamp(28px, 4vw, 40px);
+        letter-spacing: -0.03em;
+        margin: 0 0 8px;
+      }
+      p.lead {
+        margin: 0 0 32px;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 15px;
+      }
+      h2.section {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: rgba(139, 147, 167, 0.95);
+        margin: 28px 0 12px;
+      }
+      h2.section:first-of-type {
+        margin-top: 0;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 12px;
+      }
+      a {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        padding: 18px 20px;
+        border-radius: 14px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      }
+      a:hover {
+        transform: translateY(-1px);
+        border-color: rgba(108, 140, 255, 0.45);
+        background: linear-gradient(180deg, rgba(108, 140, 255, 0.12), rgba(255, 255, 255, 0.02));
+      }
+      .title {
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        margin-bottom: 4px;
+      }
+      .desc {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+        margin-bottom: 6px;
+      }
+      footer {
+        margin-top: 40px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 12px;
+        color: #c9d1ff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>现代 UI 风格静态预览</h1>
+      <p class="lead">
+        以下为互不依赖的纯静态 HTML，可直接双击打开，或在 Next 开发服务器下访问
+        <code>/ui-style-demos/</code> 路径。
+      </p>
+      <h2 class="section">极光玻璃 · 同系变体</h2>
+      <ul>
+        <li>
+          <a href="./style-aurora-glass.html">
+            <span class="tag">深 · 经典</span>
+            <div class="title">极光玻璃（Aurora Glass）</div>
+            <div class="desc">深色底 + 网格渐变、磨砂玻璃与柔和光晕，原版参考。</div>
+          </a>
+        </li>
+        <li>
+          <a href="./style-glass-opal-dawn.html">
+            <span class="tag">浅 · 冷暖平衡</span>
+            <div class="title">蛋白石晨雾（Opal Dawn）</div>
+            <div class="desc">亮底 + 桃粉 / 天蓝 / 薄荷光斑，亲和力强的浅色玻璃。</div>
+          </a>
+        </li>
+        <li>
+          <a href="./style-glass-lilac-milk.html">
+            <span class="tag">浅 · 粉紫</span>
+            <div class="title">薰衣草牛奶（Lilac Milk）</div>
+            <div class="desc">柔雾粉紫系，温和可信，适合品牌化程度较高的 B2B。</div>
+          </a>
+        </li>
+        <li>
+          <a href="./style-glass-arctic-mist.html">
+            <span class="tag">浅 · 冷调</span>
+            <div class="title">极地雾蓝（Arctic Mist）</div>
+            <div class="desc">冰蓝雾白，理性清爽，偏合规 / 数据 / 审计叙事。</div>
+          </a>
+        </li>
+        <li>
+          <a href="./style-glass-honey-serene.html">
+            <span class="tag">浅 · 暖调</span>
+            <div class="title">蜂蜜静谧（Honey Serene）</div>
+            <div class="desc">蜂蜜燕麦暖浅底，协作与客户向界面更「有人味」。</div>
+          </a>
+        </li>
+        <li>
+          <a href="./style-glass-pearl-dusk.html">
+            <span class="tag">浅 · 中性</span>
+            <div class="title">珍珠暮灰（Pearl Dusk）</div>
+            <div class="desc">银灰 + 极淡靛紫高光，最中性、最易后续换 accent 品牌化。</div>
+          </a>
+        </li>
+      </ul>
+      <h2 class="section">其他方向</h2>
+      <ul>
+        <li>
+          <a href="./style-swiss-editorial.html">
+            <span class="tag">排版 · 理性</span>
+            <div class="title">瑞士编辑风（Swiss Editorial）</div>
+            <div class="desc">大字号、强网格、高对比，偏 Linear / 杂志式信息层级。</div>
+          </a>
+        </li>
+        <li>
+          <a href="./style-neo-brutalist.html">
+            <span class="tag">态度 · 记忆点</span>
+            <div class="title">新粗野主义（Neo-Brutalist）</div>
+            <div class="desc">粗边框、硬阴影、高饱和色块，适合品牌年轻化与营销落地页。</div>
+          </a>
+        </li>
+        <li>
+          <a href="./style-midnight-devtools.html">
+            <span class="tag">开发者 · 终端</span>
+            <div class="title">午夜工具台（Midnight DevTools）</div>
+            <div class="desc">深色底、等宽点缀、细网格与状态色，适合技术型控制台。</div>
+          </a>
+        </li>
+        <li>
+          <a href="./style-soft-bento.html">
+            <span class="tag">温和 · 效率</span>
+            <div class="title">柔感便当格（Soft Bento）</div>
+            <div class="desc">大圆角、轻阴影、暖灰背景，偏 Apple / Notion 式日常工具感。</div>
+          </a>
+        </li>
+      </ul>
+      <footer>Contract Agent Platform · UI exploration</footer>
+    </div>
+  </body>
+</html>

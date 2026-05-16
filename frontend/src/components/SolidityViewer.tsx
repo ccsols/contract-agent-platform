@@ -134,7 +134,7 @@ const tokenColors: Record<string, string> = {
   comment: '#6B7280',     // 灰色 — 注释
   string: '#059669',      // 绿色 — 字符串
   number: '#D97706',      // 琥珀色 — 数字
-  annotation: '#2563EB',  // 蓝色 — 注解
+  annotation: '#38bdf8',  // 天蓝 — 注解
   symbol: '#374151',      // 深灰 — 符号
   plain: '#111827',       // 近黑 — 普通文本
 };

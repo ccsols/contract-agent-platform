@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>极光玻璃 · UI 风格预览</title>
+    <style>
+      :root {
+        --ink: #0a0b10;
+        --glass: rgba(255, 255, 255, 0.08);
+        --glass-border: rgba(255, 255, 255, 0.18);
+        --text: #f4f6ff;
+        --muted: rgba(244, 246, 255, 0.72);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        color: var(--text);
+        background: var(--ink);
+        overflow-x: hidden;
+      }
+      .bg {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(900px 700px at 10% 10%, #4f46e5 0%, transparent 55%),
+          radial-gradient(800px 600px at 90% 20%, #ec4899 0%, transparent 50%),
+          radial-gradient(700px 500px at 40% 90%, #22d3ee 0%, transparent 55%), #070814;
+        filter: saturate(1.15);
+        z-index: 0;
+      }
+      .noise {
+        position: fixed;
+        inset: 0;
+        opacity: 0.06;
+        mix-blend-mode: overlay;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        z-index: 1;
+      }
+      .shell {
+        position: relative;
+        z-index: 2;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 32px) 64px;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: clamp(40px, 8vw, 88px);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .orb {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #a5b4fc, #f472b6);
+        box-shadow: 0 0 24px rgba(244, 114, 182, 0.55);
+      }
+      .nav-links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 13px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        transition: 0.2s;
+      }
+      .nav-links a:hover {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: clamp(20px, 4vw, 36px);
+        align-items: stretch;
+      }
+      @media (max-width: 880px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .glass {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+        border-radius: 22px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+      }
+      .hero {
+        padding: clamp(24px, 4vw, 36px);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.85);
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.06);
+        margin-bottom: 18px;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: #34d399;
+        box-shadow: 0 0 12px #34d399;
+      }
+      h1 {
+        margin: 0 0 14px;
+        font-size: clamp(34px, 5vw, 52px);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+      }
+      .sub {
+        margin: 0 0 28px;
+        font-size: 16px;
+        line-height: 1.65;
+        color: var(--muted);
+        max-width: 46ch;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .btn {
+        border: 0;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 12px 18px;
+        border-radius: 12px;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+      }
+      .btn-primary {
+        color: #0b1020;
+        background: linear-gradient(135deg, #e0e7ff, #fbcfe8);
+        box-shadow: 0 16px 40px rgba(236, 72, 153, 0.25);
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 20px 50px rgba(236, 72, 153, 0.35);
+      }
+      .btn-ghost {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .btn-ghost:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .panel {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .panel h2 {
+        margin: 0;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.65);
+        font-weight: 700;
+      }
+      .stat {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .tile {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .tile .k {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.55);
+        margin-bottom: 6px;
+      }
+      .tile .v {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .cards {
+        margin-top: 28px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      @media (max-width: 880px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        letter-spacing: -0.02em;
+      }
+      .card p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.55;
+        color: rgba(244, 246, 255, 0.72);
+      }
+      .back {
+        margin-top: 28px;
+        font-size: 13px;
+      }
+      .back a {
+        color: rgba(255, 255, 255, 0.75);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="shell">
+      <nav>
+        <div class="brand"><span class="orb" aria-hidden="true"></span> Contract Agent</div>
+        <div class="nav-links">
+          <a href="#">概览</a>
+          <a href="#">合同</a>
+          <a href="#">风险</a>
+          <a href="#">设置</a>
+        </div>
+      </nav>
+      <section class="hero-grid">
+        <div class="glass hero">
+          <div class="pill"><span class="dot"></span> Live workspace</div>
+          <h1>把复杂条款，放进可控的工作台</h1>
+          <p class="sub">
+            极光玻璃风格强调氛围与层次：大面积渐变、半透明面板与柔和高光，让 dense
+            信息仍显得轻盈，适合需要“高级感”的企业产品首页或控制台壳层。
+          </p>
+          <div class="actions">
+            <button class="btn btn-primary" type="button">创建审查</button>
+            <button class="btn btn-ghost" type="button">查看演示数据</button>
+          </div>
+        </div>
+        <div class="glass panel">
+          <h2>今日信号</h2>
+          <div class="stat">
+            <div class="tile">
+              <div class="k">待处理</div>
+              <div class="v">18</div>
+            </div>
+            <div class="tile">
+              <div class="k">高风险段落</div>
+              <div class="v">7</div>
+            </div>
+            <div class="tile">
+              <div class="k">平均耗时</div>
+              <div class="v">12m</div>
+            </div>
+            <div class="tile">
+              <div class="k">通过率</div>
+              <div class="v">94%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="cards">
+        <div class="card">
+          <h3>可读性优先</h3>
+          <p>用光晕分区而不是硬分割线，长页面滚动时仍保持空间感。</p>
+        </div>
+        <div class="card">
+          <h3>玻璃承载信息</h3>
+          <p>关键 KPI 与列表放在半透明容器里，背景渐变提供情绪锚点。</p>
+        </div>
+        <div class="card">
+          <h3>克制动效</h3>
+          <p>悬停微抬升、阴影呼吸即可；避免过度粒子与炫光抢阅读。</p>
+        </div>
+      </div>
+      <p class="back"><a href="./index.html">← 返回风格索引</a></p>
+    </div>
+  </body>
+</html>

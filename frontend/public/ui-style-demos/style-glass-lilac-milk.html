@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>薰衣草牛奶 · 浅极光玻璃</title>
+    <style>
+      :root {
+        --text: #1e1b2e;
+        --muted: rgba(30, 27, 46, 0.58);
+        --glass: rgba(255, 255, 255, 0.5);
+        --glass-border: rgba(255, 255, 255, 0.78);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        color: var(--text);
+        background: #f7f5ff;
+        overflow-x: hidden;
+      }
+      .bg {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(880px 700px at 12% 18%, rgba(216, 180, 254, 0.5) 0%, transparent 55%),
+          radial-gradient(760px 620px at 88% 12%, rgba(251, 207, 232, 0.55) 0%, transparent 52%),
+          radial-gradient(720px 540px at 50% 95%, rgba(199, 210, 254, 0.45) 0%, transparent 54%),
+          linear-gradient(165deg, #fdfcff 0%, #f3effa 55%, #eef4ff 100%);
+        filter: saturate(1.08);
+        z-index: 0;
+      }
+      .noise {
+        position: fixed;
+        inset: 0;
+        opacity: 0.03;
+        mix-blend-mode: multiply;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        z-index: 1;
+      }
+      .shell {
+        position: relative;
+        z-index: 2;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 32px) 64px;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: clamp(40px, 8vw, 88px);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .orb {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #c4b5fd, #f0abfc);
+        box-shadow: 0 0 22px rgba(192, 132, 252, 0.5);
+      }
+      .nav-links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 13px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        transition: 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--text);
+        border-color: rgba(30, 27, 46, 0.08);
+        background: rgba(255, 255, 255, 0.55);
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: clamp(20px, 4vw, 36px);
+        align-items: stretch;
+      }
+      @media (max-width: 880px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .glass {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(22px) saturate(160%);
+        -webkit-backdrop-filter: blur(22px) saturate(160%);
+        border-radius: 22px;
+        box-shadow: 0 24px 75px rgba(76, 29, 149, 0.09), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+      }
+      .hero {
+        padding: clamp(24px, 4vw, 36px);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(30, 27, 46, 0.68);
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.85);
+        background: rgba(255, 255, 255, 0.4);
+        margin-bottom: 18px;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: #a78bfa;
+        box-shadow: 0 0 12px rgba(167, 139, 250, 0.75);
+      }
+      h1 {
+        margin: 0 0 14px;
+        font-size: clamp(34px, 5vw, 52px);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+      }
+      .sub {
+        margin: 0 0 28px;
+        font-size: 16px;
+        line-height: 1.65;
+        color: var(--muted);
+        max-width: 46ch;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .btn {
+        border: 0;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 12px 18px;
+        border-radius: 12px;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+      }
+      .btn-primary {
+        color: #1e1b2e;
+        background: linear-gradient(135deg, #e9d5ff, #fce7f3);
+        box-shadow: 0 14px 38px rgba(167, 139, 250, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.75);
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 46px rgba(167, 139, 250, 0.32);
+      }
+      .btn-ghost {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.38);
+        border: 1px solid rgba(30, 27, 46, 0.09);
+      }
+      .btn-ghost:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.58);
+      }
+      .panel {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .panel h2 {
+        margin: 0;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(30, 27, 46, 0.45);
+        font-weight: 700;
+      }
+      .stat {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .tile {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid rgba(255, 255, 255, 0.88);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.95) inset;
+      }
+      .tile .k {
+        font-size: 11px;
+        color: rgba(30, 27, 46, 0.42);
+        margin-bottom: 6px;
+      }
+      .tile .v {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .cards {
+        margin-top: 28px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      @media (max-width: 880px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 16px 48px rgba(76, 29, 149, 0.06);
+      }
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        letter-spacing: -0.02em;
+      }
+      .card p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+      .back {
+        margin-top: 28px;
+        font-size: 13px;
+      }
+      .back a {
+        color: rgba(30, 27, 46, 0.52);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="shell">
+      <nav>
+        <div class="brand"><span class="orb" aria-hidden="true"></span> Contract Agent</div>
+        <div class="nav-links">
+          <a href="#">概览</a>
+          <a href="#">合同</a>
+          <a href="#">风险</a>
+          <a href="#">设置</a>
+        </div>
+      </nav>
+      <section class="hero-grid">
+        <div class="glass hero">
+          <div class="pill"><span class="dot"></span> Lilac milk</div>
+          <h1>粉紫系浅玻璃：柔雾里的专业感</h1>
+          <p class="sub">
+            薰衣草与牛奶白混合的亮底，玻璃层略带冷紫倾向，适合品牌偏「可信 + 温和」的 B2B；比纯灰白更有记忆点，但仍保持浅色阅读舒适区。
+          </p>
+          <div class="actions">
+            <button class="btn btn-primary" type="button">创建审查</button>
+            <button class="btn btn-ghost" type="button">查看演示数据</button>
+          </div>
+        </div>
+        <div class="glass panel">
+          <h2>今日信号</h2>
+          <div class="stat">
+            <div class="tile">
+              <div class="k">待处理</div>
+              <div class="v">18</div>
+            </div>
+            <div class="tile">
+              <div class="k">高风险段落</div>
+              <div class="v">7</div>
+            </div>
+            <div class="tile">
+              <div class="k">平均耗时</div>
+              <div class="v">12m</div>
+            </div>
+            <div class="tile">
+              <div class="k">通过率</div>
+              <div class="v">94%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="cards">
+        <div class="card">
+          <h3>色相统一</h3>
+          <p>粉紫家族里混入少量蓝，避免整体发「糊」；导航与次要文字用同一色相的灰。</p>
+        </div>
+        <div class="card">
+          <h3>玻璃层级</h3>
+          <p>主面板 blur 略强、卡片略弱，形成景深；边框保持高亮白边以分离层次。</p>
+        </div>
+        <div class="card">
+          <h3>按钮策略</h3>
+          <p>主按钮用浅渐变即可，不必跳霓虹；强调交给阴影与轻微抬起。</p>
+        </div>
+      </div>
+      <p class="back"><a href="./index.html">← 返回风格索引</a></p>
+    </div>
+  </body>
+</html>

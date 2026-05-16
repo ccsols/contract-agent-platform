@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>午夜工具台 · UI 风格预览</title>
+    <style>
+      :root {
+        --bg: #070a0d;
+        --panel: #0d1117;
+        --line: rgba(255, 255, 255, 0.08);
+        --text: #e6edf3;
+        --muted: rgba(230, 237, 243, 0.62);
+        --cyan: #58d6ff;
+        --green: #3ecf8e;
+        --amber: #ffcc66;
+        --violet: #b38cff;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      }
+      .grid-bg {
+        position: fixed;
+        inset: 0;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(closest-side at 50% 20%, #000 0%, transparent 75%);
+        pointer-events: none;
+        z-index: 0;
+      }
+      .shell {
+        position: relative;
+        z-index: 1;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: clamp(22px, 4vw, 44px) clamp(16px, 4vw, 28px) 64px;
+      }
+      header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 18px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .prompt {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .prompt b {
+        color: var(--cyan);
+        font-weight: 700;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 14px;
+        align-items: start;
+      }
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+      .panel {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(0, 0, 0, 0.25);
+      }
+      .panel-head h1 {
+        margin: 0;
+        font-size: 13px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(230, 237, 243, 0.78);
+      }
+      .dots {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .dots span {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .body {
+        padding: clamp(16px, 3vw, 22px);
+      }
+      h2 {
+        margin: 0 0 10px;
+        font-size: clamp(26px, 4vw, 40px);
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+      }
+      .sub {
+        margin: 0 0 16px;
+        color: var(--muted);
+        line-height: 1.65;
+        font-size: 15px;
+        max-width: 58ch;
+      }
+      .kbd-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+      kbd {
+        font-family: var(--mono);
+        font-size: 12px;
+        padding: 6px 8px;
+        border-radius: 8px;
+        border: 1px solid rgba(88, 214, 255, 0.22);
+        background: rgba(88, 214, 255, 0.06);
+        color: rgba(230, 237, 243, 0.86);
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .btn {
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 13px;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        border-color: rgba(88, 214, 255, 0.35);
+        background: rgba(88, 214, 255, 0.08);
+      }
+      .btn-primary {
+        border-color: rgba(62, 207, 142, 0.35);
+        background: rgba(62, 207, 142, 0.12);
+      }
+      .btn-primary:hover {
+        border-color: rgba(62, 207, 142, 0.55);
+        background: rgba(62, 207, 142, 0.16);
+      }
+      .side .panel-head h1 {
+        font-family: var(--mono);
+        letter-spacing: 0;
+        text-transform: none;
+        font-size: 12px;
+        color: rgba(230, 237, 243, 0.72);
+      }
+      pre {
+        margin: 0;
+        padding: 14px;
+        font-family: var(--mono);
+        font-size: 12px;
+        line-height: 1.55;
+        color: rgba(230, 237, 243, 0.86);
+        background: rgba(0, 0, 0, 0.35);
+        border-top: 1px solid var(--line);
+        overflow: auto;
+      }
+      .c {
+        color: var(--violet);
+      }
+      .s {
+        color: var(--amber);
+      }
+      .n {
+        color: var(--cyan);
+      }
+      .g {
+        color: var(--green);
+      }
+      .list {
+        padding: 14px;
+        display: grid;
+        gap: 10px;
+      }
+      .item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        padding: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        background: rgba(0, 0, 0, 0.18);
+      }
+      .status {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        margin-top: 3px;
+        flex: 0 0 auto;
+      }
+      .status.ok {
+        background: var(--green);
+        box-shadow: 0 0 18px rgba(62, 207, 142, 0.35);
+      }
+      .status.warn {
+        background: var(--amber);
+        box-shadow: 0 0 18px rgba(255, 204, 102, 0.25);
+      }
+      .status.bad {
+        background: #ff5c7a;
+        box-shadow: 0 0 18px rgba(255, 92, 122, 0.25);
+      }
+      .item strong {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
+      .item span {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .back {
+        margin-top: 16px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .back a {
+        color: rgba(230, 237, 243, 0.78);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid-bg" aria-hidden="true"></div>
+    <div class="shell">
+      <header>
+        <div class="brand">Contract Agent · Console</div>
+        <div class="prompt"><b>env</b> production · <b>role</b> reviewer</div>
+      </header>
+      <div class="layout">
+        <section class="panel">
+          <div class="panel-head">
+            <h1>Workspace</h1>
+            <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+          </div>
+          <div class="body">
+            <h2>像 IDE 一样管理合同审查</h2>
+            <p class="sub">
+              午夜工具台风格把界面当成“终端 + 面板”：深色底、细网格、等宽字体点缀、状态色语义明确。适合开发者工具、内部运营台、以及需要长时间盯屏的专业用户界面。
+            </p>
+            <div class="kbd-row">
+              <kbd>⌘ K</kbd><kbd>快速跳转</kbd><kbd>⌘ Enter</kbd><kbd>提交结论</kbd>
+            </div>
+            <div class="actions">
+              <button class="btn btn-primary" type="button">运行差异扫描</button>
+              <button class="btn" type="button">导出报告（JSON）</button>
+            </div>
+          </div>
+          <pre><span class="c">// policy.ts</span>
+<span class="n">const</span> risk = <span class="s">"payment_terms"</span>;
+<span class="n">await</span> agent.<span class="g">review</span>({ contractId, risk });</pre>
+        </section>
+        <aside class="panel side">
+          <div class="panel-head">
+            <h1>tail -f events.log</h1>
+            <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+          </div>
+          <div class="list">
+            <div class="item">
+              <span class="status ok" aria-hidden="true"></span>
+              <div>
+                <strong>解析完成</strong><span>12 个章节结构已对齐模板 v3</span>
+              </div>
+            </div>
+            <div class="item">
+              <span class="status warn" aria-hidden="true"></span>
+              <div>
+                <strong>责任上限</strong><span>检测到与历史版本不一致的措辞</span>
+              </div>
+            </div>
+            <div class="item">
+              <span class="status bad" aria-hidden="true"></span>
+              <div>
+                <strong>自动续约</strong><span>触发红线规则：需人工确认</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+      <p class="back"><a href="./index.html">← 返回风格索引</a></p>
+    </div>
+  </body>
+</html>

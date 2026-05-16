@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>珍珠暮灰 · 浅极光玻璃</title>
+    <style>
+      :root {
+        --text: #111827;
+        --muted: rgba(17, 24, 39, 0.55);
+        --glass: rgba(255, 255, 255, 0.58);
+        --glass-border: rgba(255, 255, 255, 0.82);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        color: var(--text);
+        background: #f1f3f7;
+        overflow-x: hidden;
+      }
+      .bg {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(900px 680px at 18% 22%, rgba(199, 210, 254, 0.35) 0%, transparent 58%),
+          radial-gradient(760px 600px at 85% 12%, rgba(226, 232, 240, 0.95) 0%, transparent 50%),
+          radial-gradient(680px 520px at 55% 92%, rgba(209, 213, 219, 0.45) 0%, transparent 52%),
+          linear-gradient(180deg, #f9fafb 0%, #eceff4 100%);
+        filter: saturate(1.02);
+        z-index: 0;
+      }
+      .noise {
+        position: fixed;
+        inset: 0;
+        opacity: 0.035;
+        mix-blend-mode: multiply;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        z-index: 1;
+      }
+      .shell {
+        position: relative;
+        z-index: 2;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 32px) 64px;
+      }
+      nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: clamp(40px, 8vw, 88px);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .orb {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #e2e8f0, #c7d2fe);
+        box-shadow: 0 0 18px rgba(148, 163, 184, 0.55);
+      }
+      .nav-links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .nav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 13px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        transition: 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--text);
+        border-color: rgba(17, 24, 39, 0.08);
+        background: rgba(255, 255, 255, 0.55);
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: clamp(20px, 4vw, 36px);
+        align-items: stretch;
+      }
+      @media (max-width: 880px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .glass {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(20px) saturate(130%);
+        -webkit-backdrop-filter: blur(20px) saturate(130%);
+        border-radius: 22px;
+        box-shadow: 0 22px 68px rgba(15, 23, 42, 0.09), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+      }
+      .hero {
+        padding: clamp(24px, 4vw, 36px);
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: rgba(17, 24, 39, 0.62);
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.78);
+        background: rgba(255, 255, 255, 0.45);
+        margin-bottom: 18px;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: #818cf8;
+        box-shadow: 0 0 12px rgba(129, 140, 248, 0.55);
+      }
+      h1 {
+        margin: 0 0 14px;
+        font-size: clamp(34px, 5vw, 52px);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+      }
+      .sub {
+        margin: 0 0 28px;
+        font-size: 16px;
+        line-height: 1.65;
+        color: var(--muted);
+        max-width: 46ch;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .btn {
+        border: 0;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 12px 18px;
+        border-radius: 12px;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+      }
+      .btn-primary {
+        color: #111827;
+        background: linear-gradient(135deg, #f1f5f9, #e0e7ff);
+        box-shadow: 0 14px 34px rgba(99, 102, 241, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.75);
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 18px 42px rgba(99, 102, 241, 0.24);
+      }
+      .btn-ghost {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(17, 24, 39, 0.09);
+      }
+      .btn-ghost:hover {
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.6);
+      }
+      .panel {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .panel h2 {
+        margin: 0;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(17, 24, 39, 0.42);
+        font-weight: 700;
+      }
+      .stat {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .tile {
+        padding: 14px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.88);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.92) inset;
+      }
+      .tile .k {
+        font-size: 11px;
+        color: rgba(17, 24, 39, 0.42);
+        margin-bottom: 6px;
+      }
+      .tile .v {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .cards {
+        margin-top: 28px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      @media (max-width: 880px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        padding: 18px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.48);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 16px 46px rgba(15, 23, 42, 0.06);
+      }
+      .card h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        letter-spacing: -0.02em;
+      }
+      .card p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+      .back {
+        margin-top: 28px;
+        font-size: 13px;
+      }
+      .back a {
+        color: rgba(17, 24, 39, 0.5);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="shell">
+      <nav>
+        <div class="brand"><span class="orb" aria-hidden="true"></span> Contract Agent</div>
+        <div class="nav-links">
+          <a href="#">概览</a>
+          <a href="#">合同</a>
+          <a href="#">风险</a>
+          <a href="#">设置</a>
+        </div>
+      </nav>
+      <section class="hero-grid">
+        <div class="glass hero">
+          <div class="pill"><span class="dot"></span> Pearl dusk</div>
+          <h1>银灰浅玻璃：最中性、最容易接品牌色</h1>
+          <p class="sub">
+            以珍珠白与 slate 灰为底，极光感来自极淡的靛紫高光：整体克制、偏「企业默认皮肤」。当你还不确定品牌主色时，这一版最容易后续只换 accent 就完成品牌化。
+          </p>
+          <div class="actions">
+            <button class="btn btn-primary" type="button">创建审查</button>
+            <button class="btn btn-ghost" type="button">查看演示数据</button>
+          </div>
+        </div>
+        <div class="glass panel">
+          <h2>今日信号</h2>
+          <div class="stat">
+            <div class="tile">
+              <div class="k">待处理</div>
+              <div class="v">18</div>
+            </div>
+            <div class="tile">
+              <div class="k">高风险段落</div>
+              <div class="v">7</div>
+            </div>
+            <div class="tile">
+              <div class="k">平均耗时</div>
+              <div class="v">12m</div>
+            </div>
+            <div class="tile">
+              <div class="k">通过率</div>
+              <div class="v">94%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="cards">
+        <div class="card">
+          <h3>中性不等于无聊</h3>
+          <p>用很轻的靛紫光斑做「情绪」，其余保持灰阶；图表与状态色再承接品牌。</p>
+        </div>
+        <div class="card">
+          <h3>边界策略</h3>
+          <p>浅灰底上玻璃边用偏白的高亮描边，比用深灰线更干净。</p>
+        </div>
+        <div class="card">
+          <h3>暗色模式预留</h3>
+          <p>这一系最容易做 dark companion：把灰底反转、玻璃透明度下调即可。</p>
+        </div>
+      </div>
+      <p class="back"><a href="./index.html">← 返回风格索引</a></p>
+    </div>
+  </body>
+</html>

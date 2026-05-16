@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>瑞士编辑风 · UI 风格预览</title>
+    <style>
+      :root {
+        --paper: #fafafa;
+        --ink: #0b0b0b;
+        --muted: #5c5c5c;
+        --line: #e6e6e6;
+        --accent: #111;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      }
+      .page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: clamp(24px, 4vw, 48px) clamp(18px, 4vw, 32px) 72px;
+      }
+      header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 16px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+        align-items: end;
+      }
+      .logo {
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        font-size: 15px;
+      }
+      .meta {
+        text-align: right;
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: clamp(18px, 3vw, 28px);
+        padding: clamp(28px, 5vw, 48px) 0;
+        border-bottom: 1px solid var(--line);
+      }
+      @media (max-width: 820px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+        header {
+          grid-template-columns: 1fr;
+        }
+        .meta {
+          text-align: left;
+        }
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(40px, 6.2vw, 76px);
+        line-height: 0.95;
+        letter-spacing: -0.045em;
+        font-weight: 800;
+      }
+      .lede {
+        margin: 18px 0 0;
+        max-width: 52ch;
+        font-size: 17px;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+      .rail {
+        border-left: 1px solid var(--line);
+        padding-left: clamp(16px, 3vw, 24px);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      @media (max-width: 820px) {
+        .rail {
+          border-left: 0;
+          padding-left: 0;
+          border-top: 1px solid var(--line);
+          padding-top: 18px;
+        }
+      }
+      .rail h2 {
+        margin: 0;
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .rail ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+      .rail li {
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--ink);
+      }
+      .rail li span {
+        color: var(--muted);
+        display: block;
+        font-size: 12px;
+        margin-top: 2px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+        padding-top: clamp(22px, 4vw, 34px);
+      }
+      .cell {
+        grid-column: span 4;
+        border-top: 3px solid var(--accent);
+        padding-top: 14px;
+      }
+      @media (max-width: 900px) {
+        .cell {
+          grid-column: span 6;
+        }
+      }
+      @media (max-width: 560px) {
+        .cell {
+          grid-column: span 12;
+        }
+      }
+      .cell h3 {
+        margin: 0 0 8px;
+        font-size: 18px;
+        letter-spacing: -0.02em;
+      }
+      .cell p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+      .cta {
+        margin-top: clamp(28px, 5vw, 44px);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+      }
+      .cta p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        max-width: 52ch;
+        line-height: 1.55;
+      }
+      .btn {
+        border: 1px solid var(--ink);
+        background: var(--ink);
+        color: #fff;
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: 0.02em;
+        padding: 12px 16px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: #fff;
+        color: var(--ink);
+      }
+      .back {
+        margin-top: 22px;
+        font-size: 13px;
+      }
+      .back a {
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="logo">CONTRACT / AGENT</div>
+        <div class="meta">
+          UI STYLE — SWISS EDITORIAL<br />
+          v0.1 · STATIC PREVIEW
+        </div>
+      </header>
+      <section class="hero">
+        <div>
+          <h1>条款不是噪音，是结构。</h1>
+          <p class="lede">
+            瑞士编辑风用“报纸级排版”组织信息：强网格、清晰层级、克制的装饰。适合强调专业与可信度的法务、金融、B2B
+            SaaS，尤其是内容密度高但希望仍显冷静的产品。
+          </p>
+        </div>
+        <aside class="rail">
+          <div>
+            <h2>设计要点</h2>
+            <ul>
+              <li>超大标题 + 窄副标题<span>第一眼给出产品主张</span></li>
+              <li>细线与留白分区<span>避免阴影堆叠造成“软塌”</span></li>
+              <li>少量纯黑强调<span>CTA 与关键导航保持锋利</span></li>
+            </ul>
+          </div>
+        </aside>
+      </section>
+      <section class="grid" aria-label="特性">
+        <article class="cell">
+          <h3>01 栅格</h3>
+          <p>12 列栅格让卡片宽度有节奏；移动端直接叠成单栏，阅读动线更直。</p>
+        </article>
+        <article class="cell">
+          <h3>02 字体</h3>
+          <p>系统无衬线即可；通过字重与字号阶梯制造层级，少用花体字。</p>
+        </article>
+        <article class="cell">
+          <h3>03 颜色</h3>
+          <p>主色通常接近黑白；若需要品牌色，建议只用于一条“编辑线”或小标签。</p>
+        </article>
+      </section>
+      <div class="cta">
+        <p>如果你希望界面像“精密仪器”而不是“氛围海报”，这一版通常最耐看、也最容易长期维护。</p>
+        <button class="btn" type="button">开始审查</button>
+      </div>
+      <p class="back"><a href="./index.html">← 返回风格索引</a></p>
+    </div>
+  </body>
+</html>

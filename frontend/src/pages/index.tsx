@@ -25,65 +25,70 @@ const AGENT_CONFIG = [
 ];
 
 // ============================================================
-// 样式 (Future Minimalism)
+// 样式 (Opal Dawn — 蛋白石晨雾)
 // ============================================================
 const s = {
   card: {
-    background: 'var(--bg-surface)',
-    border: '1px solid var(--border-standard)',
-    borderRadius: 'var(--radius-lg)',
+    background: 'var(--glass-bg)',
+    backdropFilter: 'blur(20px) saturate(150%)',
+    WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+    border: '1px solid var(--glass-border)',
+    borderRadius: 'var(--radius-xl)',
     padding: 'var(--space-6)',
-    boxShadow: 'var(--shadow-md)',
-    transition: 'box-shadow 0.2s',
+    boxShadow: 'var(--glass-shadow)',
+    transition: 'box-shadow 0.2s, transform 0.15s',
   } as React.CSSProperties,
   panel: {
     background: 'var(--bg-panel)',
-    border: '1px solid var(--border-standard)',
+    backdropFilter: 'blur(16px) saturate(140%)',
+    WebkitBackdropFilter: 'blur(16px) saturate(140%)',
+    border: '1px solid var(--glass-border-strong)',
     borderRadius: 'var(--radius-lg)',
     padding: 'var(--space-4)',
+    boxShadow: 'var(--glass-shadow-sm)',
   } as React.CSSProperties,
   btnPrimary: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-    padding: '10px 24px',
-    background: 'var(--gradient-main)',
-    backgroundSize: '200% auto',
-    color: '#fff',
-    border: 'none',
+    padding: '12px 20px',
+    background: 'var(--gradient-cta)',
+    color: 'var(--text-primary)',
+    border: '1px solid rgba(255, 255, 255, 0.65)',
     borderRadius: 'var(--radius-md)',
     fontSize: 'var(--fs-base)',
-    fontWeight: 500,
+    fontWeight: 600,
     cursor: 'pointer',
-    transition: 'opacity 0.2s, box-shadow 0.2s',
+    boxShadow: 'var(--shadow-cta)',
+    transition: 'transform 0.15s ease, box-shadow 0.2s ease',
     lineHeight: 1.4,
   } as React.CSSProperties,
   btnGhost: {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
     padding: '10px 20px',
-    background: 'var(--bg-surface)',
-    color: 'var(--text-secondary)',
+    background: 'rgba(255, 255, 255, 0.42)',
+    color: 'var(--text-primary)',
     border: '1px solid var(--border-standard)',
     borderRadius: 'var(--radius-md)',
     fontSize: 'var(--fs-base)',
-    fontWeight: 500,
+    fontWeight: 600,
     cursor: 'pointer',
-    transition: 'border-color 0.15s, box-shadow 0.15s, background 0.15s',
+    transition: 'border-color 0.15s, box-shadow 0.15s, background 0.15s, transform 0.15s',
     lineHeight: 1.4,
   } as React.CSSProperties,
   btnSmall: {
     display: 'inline-flex', alignItems: 'center', gap: '4px',
-    padding: '6px 14px',
-    background: 'var(--bg-panel)',
+    padding: '8px 14px',
+    background: 'rgba(255, 255, 255, 0.45)',
     color: 'var(--text-tertiary)',
-    border: '1px solid var(--border-subtle)',
+    border: '1px solid var(--border-standard)',
     borderRadius: 'var(--radius-pill)',
     fontSize: 'var(--fs-sm)',
-    fontWeight: 500,
+    fontWeight: 600,
     cursor: 'pointer',
     transition: 'all 0.15s',
   } as React.CSSProperties,
   input: {
     width: '100%', padding: '11px 14px',
-    background: 'var(--bg-canvas)',
+    background: 'rgba(255, 255, 255, 0.55)',
     color: 'var(--text-primary)',
     border: '1px solid var(--border-standard)',
     borderRadius: 'var(--radius-md)',
@@ -103,28 +108,28 @@ const s = {
   agentPill: (isActive: boolean, color: string, status: string) => ({
     display: 'inline-flex', alignItems: 'center', gap: '8px',
     padding: '8px 18px',
-    background: isActive ? `var(--gradient-main)` : 'var(--bg-panel)',
-    backgroundSize: '200% auto' as any,
-    border: `1px solid ${isActive ? 'transparent' : 'var(--border-standard)'}`,
+    background: isActive ? 'var(--gradient-cta)' : 'rgba(255, 255, 255, 0.45)',
+    border: `1px solid ${isActive ? 'rgba(255, 255, 255, 0.65)' : 'var(--border-standard)'}`,
     borderRadius: 'var(--radius-pill)',
     cursor: 'pointer',
     transition: 'all 0.2s',
     fontSize: 'var(--fs-base)',
-    fontWeight: 500,
-    color: isActive ? '#fff' :
+    fontWeight: 600,
+    color: isActive ? 'var(--text-primary)' :
            status === 'completed' ? 'var(--status-completed)' :
            status === 'running' ? 'var(--text-primary)' :
            status === 'failed' ? 'var(--status-failed)' :
            'var(--text-tertiary)',
-    opacity: status === 'idle' && !isActive ? 0.5 : 1,
-    boxShadow: isActive ? '0 2px 12px rgba(37, 99, 235, 0.25)' : 'none',
+    opacity: status === 'idle' && !isActive ? 0.55 : 1,
+    boxShadow: isActive ? 'var(--shadow-cta)' : 'none',
   } as React.CSSProperties),
   statusDot: (status: string) => ({
     width: '8px', height: '8px', borderRadius: '50%',
     background: status === 'completed' ? 'var(--status-completed)' :
-                status === 'running' ? '#fff' :
+                status === 'running' ? color :
                 status === 'failed' ? 'var(--status-failed)' :
                 'var(--status-idle)',
+    boxShadow: status === 'running' ? `0 0 10px ${color}` : status === 'completed' ? '0 0 10px rgba(52, 211, 153, 0.55)' : 'none',
     transition: 'all 0.3s',
   } as React.CSSProperties),
 };
@@ -300,46 +305,49 @@ export default function HomePage() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      {/* Header — floating, minimal */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 50,
-        background: 'rgba(250,250,250,0.85)',
-        backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid var(--border-subtle)',
+        background: 'var(--header-bg)',
+        backdropFilter: 'blur(20px) saturate(150%)',
+        WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+        borderBottom: '1px solid var(--header-border)',
+        boxShadow: '0 1px 0 rgba(255, 255, 255, 0.85) inset',
         padding: 'var(--space-4) var(--space-6)',
       }}>
-        <div style={{ maxWidth: '1024px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{
-              width: '32px', height: '32px', borderRadius: 'var(--radius-sm)',
-              background: 'var(--gradient-main)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '16px', color: '#fff', fontWeight: 600,
-            }}>⧩</div>
+        <div style={{ maxWidth: '1080px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span className="brand-orb" aria-hidden="true" />
             <div>
               <h1 style={{ fontSize: 'var(--fs-lg)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.3px', lineHeight: 1.2 }}>
                 AI 合约智能体
               </h1>
-              <p style={{ fontSize: '12px', color: 'var(--text-quaternary)', fontWeight: 400, letterSpacing: '0.2px' }}>
+              <p style={{ fontSize: '12px', color: 'var(--text-tertiary)', fontWeight: 400 }}>
                 全链路自动化智能合约生成
               </p>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {sseConnected && projectId && (
-              <span style={{ fontSize: '11px', color: 'var(--status-completed)', display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 10px', background: 'var(--status-completed-bg)', borderRadius: 'var(--radius-pill)' }}>
-                <span className="animate-pulse" style={{ fontSize: '8px' }}>●</span> Live
+              <span style={{
+                fontSize: '11px', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase',
+                color: 'rgba(15, 23, 42, 0.72)', display: 'flex', alignItems: 'center', gap: '6px',
+                padding: '8px 12px', background: 'rgba(255, 255, 255, 0.45)',
+                border: '1px solid rgba(255, 255, 255, 0.75)', borderRadius: 'var(--radius-pill)',
+              }}>
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--status-completed)', boxShadow: '0 0 10px rgba(52, 211, 153, 0.65)' }} />
+                Live
               </span>
             )}
             <button onClick={openHistory} style={s.btnSmall}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.borderColor = 'var(--border-standard)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-panel)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; }}>
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.62)'; e.currentTarget.style.borderColor = 'var(--border-medium)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.45)'; e.currentTarget.style.borderColor = 'var(--border-standard)'; }}>
               ≡ 历史
             </button>
           </div>
         </div>
       </header>
 
-      <main style={{ maxWidth: '1024px', margin: '0 auto', padding: 'var(--space-10) var(--space-6)' }}>
+      <main style={{ maxWidth: '1080px', margin: '0 auto', padding: 'clamp(28px, 5vw, 56px) clamp(20px, 4vw, 32px) 64px' }}>
         {/* 非历史模式 */}
         {!historyOpen && currentStep === 0 && <TemplateSelector templates={TEMPLATES} onSelect={(t) => { setSelectedTemplate(t); setCurrentStep(1); }} />}
         {!historyOpen && currentStep === 1 && selectedTemplate && <RequirementForm template={selectedTemplate} formData={requirementForm} onUpdate={updateRequirementForm} onBack={() => setCurrentStep(0)} onSubmit={startGeneration} />}
@@ -361,7 +369,7 @@ function TemplateSelector({ templates, onSelect }: { templates: Template[]; onSe
   return (
     <div className="animate-slideUp">
       <div style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
-        <h2 style={{ fontSize: 'var(--fs-2xl)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.6px', marginBottom: '8px' }}>
+        <h2 style={{ fontSize: 'var(--fs-2xl)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.04em', marginBottom: '8px', lineHeight: 1.05 }}>
           选择合同模板
         </h2>
         <p style={{ fontSize: 'var(--fs-base)', color: 'var(--text-tertiary)' }}>选择一个模板开始生成智能合约</p>
@@ -372,19 +380,17 @@ function TemplateSelector({ templates, onSelect }: { templates: Template[]; onSe
             style={{
               ...s.btnGhost, flexDirection: 'column', alignItems: 'flex-start',
               padding: 'var(--space-6) var(--space-5)', textAlign: 'left',
-              borderRadius: 'var(--radius-lg)', gap: 'var(--space-3)', height: 'auto',
-              border: '1px solid var(--border-standard)', background: 'var(--bg-surface)',
-              boxShadow: 'var(--shadow-sm)',
+              borderRadius: 'var(--radius-xl)', gap: 'var(--space-3)', height: 'auto',
+              border: '1px solid var(--glass-border)',
+              background: 'var(--glass-bg)',
+              backdropFilter: 'blur(16px) saturate(140%)',
+              WebkitBackdropFilter: 'blur(16px) saturate(140%)',
+              boxShadow: 'var(--glass-shadow-sm)',
               animation: `slideUp 0.35s cubic-bezier(0.16,1,0.3,1) ${i * 0.06}s both`,
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-standard)'; e.currentTarget.style.boxShadow = 'var(--shadow-sm)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
-            <span style={{
-              width: '40px', height: '40px', borderRadius: 'var(--radius-sm)',
-              background: 'var(--gradient-main)', color: '#fff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '18px', fontWeight: 600,
-            }}>{t.icon}</span>
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.9)'; e.currentTarget.style.boxShadow = 'var(--glass-shadow)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.boxShadow = 'var(--glass-shadow-sm)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+            <span className="icon-orb" style={{ fontSize: '18px' }}>{t.icon}</span>
             <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 'var(--fs-md)' }}>{t.name}</span>
             <span style={{ color: 'var(--text-tertiary)', fontSize: 'var(--fs-sm)', lineHeight: 1.5 }}>{t.description}</span>
           </button>
@@ -488,13 +494,13 @@ function RequirementForm({ template, formData, onUpdate, onBack, onSubmit }: {
   return (
     <div className="animate-slideUp">
       <button onClick={onBack} style={{ ...s.btnSmall, marginBottom: 'var(--space-4)' }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.borderColor = 'var(--border-standard)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-panel)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; }}>
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.62)'; e.currentTarget.style.borderColor = 'var(--border-medium)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.45)'; e.currentTarget.style.borderColor = 'var(--border-standard)'; }}>
         ← 返回
       </button>
       <div style={s.card}>
         <div style={{ marginBottom: 'var(--space-6)' }}>
-          <div style={{ width: '36px', height: '36px', borderRadius: 'var(--radius-sm)', background: 'var(--gradient-main)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 600, marginBottom: 'var(--space-3)' }}>{template.icon}</div>
+          <span className="icon-orb" style={{ width: 36, height: 36, fontSize: '16px', marginBottom: 'var(--space-3)' }}>{template.icon}</span>
           <h2 style={{ fontSize: 'var(--fs-xl)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.4px' }}>{template.name}</h2>
           <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--fs-base)', marginTop: '4px' }}>{template.description}</p>
         </div>
@@ -512,7 +518,7 @@ function RequirementForm({ template, formData, onUpdate, onBack, onSubmit }: {
             cursor: 'pointer',
             marginBottom: 'var(--space-6)',
             transition: 'all 0.2s',
-            background: ocrLoading ? 'var(--gradient-subtle)' : 'var(--bg-panel)',
+            background: ocrLoading ? 'var(--gradient-subtle)' : 'rgba(255, 255, 255, 0.38)',
           }}
           onMouseEnter={(e) => { if (!ocrLoading) e.currentTarget.style.borderColor = 'var(--accent)'; }}
           onMouseLeave={(e) => { if (!ocrLoading) e.currentTarget.style.borderColor = 'var(--border-medium)'; }}
@@ -541,8 +547,8 @@ function RequirementForm({ template, formData, onUpdate, onBack, onSubmit }: {
         </div>
         <div style={{ marginTop: 'var(--space-6)', display: 'flex', justifyContent: 'flex-end' }}>
           <button onClick={onSubmit} style={s.btnPrimary}
-            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(37, 99, 235, 0.30)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.boxShadow = 'none'; }}>
+            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = 'var(--shadow-cta-hover)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'var(--shadow-cta)'; }}>
             开始生成 →
           </button>
         </div>
@@ -558,8 +564,8 @@ function ConfirmationView({ confirmations, onConfirm, onBack }: { confirmations:
   return (
     <div className="animate-slideUp">
       <button onClick={onBack} style={{ ...s.btnSmall, marginBottom: 'var(--space-4)' }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.borderColor = 'var(--border-standard)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-panel)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; }}>
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.62)'; e.currentTarget.style.borderColor = 'var(--border-medium)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.45)'; e.currentTarget.style.borderColor = 'var(--border-standard)'; }}>
         ← 返回修改
       </button>
       <div style={s.card}>
@@ -573,11 +579,11 @@ function ConfirmationView({ confirmations, onConfirm, onBack }: { confirmations:
                 {conf.options.map((opt: string) => {
                   const sel = conf.selected === opt;
                   return <button key={opt} onClick={() => onConfirm(conf.id, opt)}
-                    style={{ padding: '8px 20px', borderRadius: 'var(--radius-pill)', cursor: 'pointer', fontSize: 'var(--fs-base)', fontWeight: 500, transition: 'all 0.15s',
-                      background: sel ? 'var(--gradient-main)' : 'var(--bg-panel)',
-                      color: sel ? '#fff' : 'var(--text-secondary)',
-                      border: 'none',
-                      boxShadow: sel ? '0 2px 8px rgba(37, 99, 235, 0.20)' : 'none',
+                    style={{ padding: '8px 20px', borderRadius: 'var(--radius-pill)', cursor: 'pointer', fontSize: 'var(--fs-base)', fontWeight: 600, transition: 'all 0.15s',
+                      background: sel ? 'var(--gradient-cta)' : 'rgba(255, 255, 255, 0.45)',
+                      color: sel ? 'var(--text-primary)' : 'var(--text-secondary)',
+                      border: sel ? '1px solid rgba(255, 255, 255, 0.65)' : '1px solid var(--border-standard)',
+                      boxShadow: sel ? 'var(--shadow-cta)' : 'none',
                     }}
                     onMouseEnter={(e) => { if (!sel) { e.currentTarget.style.background = 'var(--bg-subtle)'; }}}
                     onMouseLeave={(e) => { if (!sel) { e.currentTarget.style.background = 'var(--bg-panel)'; }}}>{opt}</button>;
@@ -609,7 +615,7 @@ function GenerationView({ agentStatuses, eventLogs, agentThoughts, agentArtifact
       <div style={s.card}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--space-6)' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--gradient-main)', animation: 'glowPulse 2s ease-in-out infinite' }} />
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--status-completed)', boxShadow: '0 0 12px rgba(52, 211, 153, 0.65)', animation: 'glowPulse 2s ease-in-out infinite' }} />
             <h2 style={{ fontSize: 'var(--fs-xl)', fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '-0.4px' }}>AI 正在生成中</h2>
           </div>
           <p style={{ color: 'var(--text-tertiary)', fontSize: 'var(--fs-base)' }}>{isLoading ? 'Agent 正在实时协作生成您的合约' : '等待开始...'}</p>
@@ -777,7 +783,7 @@ function DemoView({ projectId, demoUrl, onReset, allArtifacts }: {
                 onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)'; }}
                 onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.color = 'var(--text-tertiary)'; }}>
                 {tab.label}
-                {isActive && <span style={{ position: 'absolute', bottom: '-1px', left: '8px', right: '8px', height: '2px', background: 'var(--gradient-main)', borderRadius: '1px' }} />}
+                {isActive && <span style={{ position: 'absolute', bottom: '-1px', left: '8px', right: '8px', height: '2px', background: 'var(--gradient-cta)', borderRadius: '1px' }} />}
               </button>
             );
           })}
@@ -791,8 +797,8 @@ function DemoView({ projectId, demoUrl, onReset, allArtifacts }: {
           <button onClick={copyLink} style={s.btnGhost}>复制链接</button>
           <button onClick={() => setShowShareModal(true)} style={s.btnGhost}>分享</button>
           <a href={demoUrl} target="_blank" rel="noopener noreferrer" style={{ ...s.btnPrimary, textDecoration: 'none' }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.opacity = '0.9'; (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px rgba(37, 99, 235, 0.30)'; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.opacity = '1'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}>在新窗口打开</a>
+            onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-cta-hover)'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--shadow-cta)'; }}>在新窗口打开</a>
           <button onClick={onReset} style={s.btnGhost}>新建项目</button>
         </div>
 
@@ -804,7 +810,7 @@ function DemoView({ projectId, demoUrl, onReset, allArtifacts }: {
       {showShareModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'var(--bg-overlay)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, animation: 'fadeIn 0.15s ease-out' }}
           onClick={() => setShowShareModal(false)}>
-          <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-standard)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', maxWidth: '360px', width: '90%', boxShadow: 'var(--shadow-xl)' }}
+          <div style={{ ...s.card, maxWidth: '360px', width: '90%' }}
             onClick={(e) => e.stopPropagation()}>
             <h3 style={{ fontSize: 'var(--fs-lg)', fontWeight: 600, color: 'var(--text-primary)', marginBottom: 'var(--space-5)' }}>分享 Demo</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
@@ -814,8 +820,8 @@ function DemoView({ projectId, demoUrl, onReset, allArtifacts }: {
             </div>
             <div style={{ marginTop: 'var(--space-5)', textAlign: 'center' }}>
               <button onClick={() => setShowShareModal(false)} style={{ ...s.btnSmall, padding: '8px 28px' }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--bg-surface)'; e.currentTarget.style.borderColor = 'var(--border-standard)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'var(--bg-panel)'; e.currentTarget.style.borderColor = 'var(--border-subtle)'; }}>关闭</button>
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.62)'; e.currentTarget.style.borderColor = 'var(--border-medium)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.45)'; e.currentTarget.style.borderColor = 'var(--border-standard)'; }}>关闭</button>
             </div>
           </div>
         </div>
@@ -991,8 +997,8 @@ function HistoryView({ projects, loading, onSelect, onBack }: {
                   textAlign: 'left', width: '100%', borderRadius: 'var(--radius-lg)',
                   animation: `slideUp 0.3s cubic-bezier(0.16,1,0.3,1) ${i * 0.03}s both`,
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.boxShadow = 'var(--shadow-md)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-standard)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.9)'; e.currentTarget.style.boxShadow = 'var(--glass-shadow)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.boxShadow = 'var(--glass-shadow-sm)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                 <div>
                   <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 'var(--fs-base)', marginBottom: '2px' }}>{p.name}</div>
                   <div style={{ fontSize: 'var(--fs-sm)', color: 'var(--text-quaternary)', fontFamily: 'var(--font-mono)' }}>
