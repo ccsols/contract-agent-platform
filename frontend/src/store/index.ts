@@ -120,10 +120,13 @@ interface AppState {
   agentThoughts: Record<string, string[]>;
   addAgentThought: (agent: string, thought: string) => void;
   clearAgentThoughts: () => void;
-  // Agent 产物（按 agent 分组的文档内容）
+  // 产物（按 agent 分组的文档内容）
   agentArtifacts: Record<string, any>;
   setAgentArtifact: (agent: string, artifact: any) => void;
-  
+  // 全量产物列表（从后端 /api/project/{id}/artifacts 获取）
+  allArtifacts: Record<string, any>;
+  setAllArtifacts: (artifacts: Record<string, any>) => void;
+
   reset: () => void;
 }
 
@@ -232,7 +235,7 @@ export const useStore = create<AppState>((set) => ({
     })),
   clearAgentThoughts: () => set({ agentThoughts: {} }),
   
-  // Agent 产物
+  // 产物（按 agent 分组的文档内容）
   agentArtifacts: {},
   setAgentArtifact: (agent, artifact) =>
     set((state) => ({
@@ -241,7 +244,11 @@ export const useStore = create<AppState>((set) => ({
         [agent]: artifact,
       },
     })),
-  
+
+  // 全量产物列表
+  allArtifacts: {},
+  setAllArtifacts: (artifacts) => set({ allArtifacts: artifacts }),
+
   reset: () => set({
     currentProjectId: null,
     selectedTemplate: null,
@@ -264,5 +271,6 @@ export const useStore = create<AppState>((set) => ({
     eventLogs: [],
     agentThoughts: {},
     agentArtifacts: {},
+    allArtifacts: {},
   }),
 }));

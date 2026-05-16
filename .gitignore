@@ -29,6 +29,11 @@ Thumbs.db
 *.log
 /tmp/
 
+# Temp OCR files
+*.tif
+*.tiff
+stdout.processed.*
+
 # Generated project storage - too many test artifacts
 storage/projects/
 

@@ -499,8 +499,8 @@ def simulate_project(project_id):
 # ============================================================
 
 @app.route('/api/project/<project_id>/artifacts')
-def get_artifacts(project_id):
-    """获取项目的所有成果"""
+def get_all_artifacts(project_id):
+    """获取项目的所有成果（含合约代码和前端代码）"""
     project_path = storage.get_project_path(project_id)
     if not project_path.exists():
         return jsonify({'error': 'Project not found'}), 404
@@ -518,6 +518,39 @@ def get_artifacts(project_id):
     if tech_file.exists():
         with open(tech_file, 'r', encoding='utf-8') as f:
             artifacts['tech_design'] = json.load(f)
+
+    # 合约代码
+    contract_dir = project_path / "contract"
+    if contract_dir.exists():
+        sol_files = []
+        for f in contract_dir.iterdir():
+            if f.is_file() and f.suffix in ('.sol', '.json', '.txt', '.py', '.ts', '.js'):
+                try:
+                    sol_files.append({'filename': f.name, 'content': f.read_text(encoding='utf-8')})
+                except:
+                    pass
+        if sol_files:
+            artifacts['contract'] = sol_files
+
+    # 前端代码（递归）
+    frontend_dir = project_path / "frontend"
+    if frontend_dir.exists():
+        frontend_files = []
+        for root, _dirs, files in os.walk(str(frontend_dir)):
+            for fn in files:
+                fp = Path(root) / fn
+                try:
+                    rel_path = str(fp.relative_to(frontend_dir))
+                    frontend_files.append({'filename': rel_path, 'content': fp.read_text(encoding='utf-8')})
+                except:
+                    pass
+        if frontend_files:
+            artifacts['frontend'] = frontend_files
+
+    # 项目元数据
+    metadata = storage.get_metadata(project_id)
+    if metadata:
+        artifacts['metadata'] = metadata
 
     return jsonify({
         'project_id': project_id,
@@ -562,6 +595,7 @@ def get_artifact(project_id, artifact_type):
 # ============================================================
 # Cost 统计 API
 # ============================================================
+
 
 @app.route('/api/project/<project_id>/cost', methods=['GET'])
 def get_project_cost(project_id):
@@ -611,6 +645,236 @@ def update_project_cost(project_id):
         json.dump(existing, f, indent=2)
 
     return jsonify(existing)
+
+
+# ============================================================
+# OCR API - 识别合同图片/PDF，提取关键信息
+# ============================================================
+
+import tempfile
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'webp', 'pdf', 'bmp', 'tiff', 'tif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/api/ocr/parse', methods=['POST'])
+def ocr_parse():
+    """上传合同文件（支持多张图片/PDF），OCR识别后返回结构化字段数据"""
+    # 支持单文件 ('file') 和多文件 ('files')
+    uploaded = request.files.getlist('files') or ([request.files['file']] if 'file' in request.files else [])
+    if not uploaded:
+        return jsonify({'error': '请上传文件'}), 400
+
+    template_id = request.form.get('template', 'custom')
+    all_texts = []
+    temp_paths = []
+
+    try:
+        for file in uploaded:
+            if not file.filename or not allowed_file(file.filename):
+                continue
+            with tempfile.NamedTemporaryFile(delete=False, suffix='_' + file.filename) as tmp:
+                file.save(tmp.name)
+                tmp_path = tmp.name
+                temp_paths.append(tmp_path)
+
+            text = extract_text_via_ocr(tmp_path)
+            if text and len(text.strip()) >= 5:
+                all_texts.append(text.strip())
+
+        # 清理临时文件
+        for p in temp_paths:
+            try:
+                os.unlink(p)
+            except:
+                pass
+
+        raw_text = '\n\n'.join(all_texts)
+
+        if not raw_text or len(raw_text.strip()) < 10:
+            return jsonify({'error': '未能从文件中识别到有效文本，请确认图片清晰或包含文字'}), 400
+
+        # 用 LLM 解析文本为结构化字段
+        parsed = parse_contract_text(raw_text, template_id)
+
+        return jsonify({
+            'success': True,
+            'raw_text': raw_text[:2000],
+            'fields': parsed,
+            'pages_processed': len(all_texts)
+        })
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        # 清理临时文件
+        for p in temp_paths:
+            try:
+                os.unlink(p)
+            except:
+                pass
+        return jsonify({'error': f'OCR 处理失败: {str(e)}'}), 500
+
+
+def extract_text_via_ocr(filepath: str) -> str:
+    """使用 qwen-vl-ocr (DashScope) 从图片中提取文字"""
+    import base64
+    import json
+    import urllib.request
+    import traceback
+    import io
+
+    DASHSCOPE_KEY = "sk-bfd976ea3cb64acaadd72169b332afad"
+    DASHSCOPE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+
+    try:
+        from PIL import Image, ImageEnhance, ImageFilter
+
+        img = Image.open(filepath)
+
+        # 增强图片质量：CLAHE 对比度增强 + 锐化
+        try:
+            import cv2
+            import numpy as np
+            img_rgb = np.array(img)
+            gray = cv2.cvtColor(img_rgb, cv2.COLOR_RGB2GRAY) if len(img_rgb.shape) == 3 else img_rgb
+            # CLAHE 增强
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+            enhanced = clahe.apply(gray)
+            # 锐化
+            sharpen = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+            sharpened = cv2.filter2D(enhanced, -1, sharpen)
+            img = Image.fromarray(sharpened)
+        except ImportError:
+            # 没有 OpenCV 时用 PIL 增强
+            img = img.convert('L')
+            img = ImageEnhance.Contrast(img).enhance(1.5)
+            img = img.filter(ImageFilter.SHARPEN)
+
+        # 如果图片太大，压缩到最大 2000px
+        w, h = img.size
+        if max(w, h) > 2000:
+            ratio = 2000 / max(w, h)
+            img = img.resize((int(w * ratio), int(h * ratio)), Image.LANCZOS)
+
+        buf = io.BytesIO()
+        img.save(buf, format='PNG')
+        img_data = buf.getvalue()
+
+        media_type = 'image/png'
+        ext = Path(filepath).suffix.lower()
+        if ext in ('.jpg', '.jpeg'):
+            media_type = 'image/jpeg'
+        elif ext == '.webp':
+            media_type = 'image/webp'
+
+        b64 = base64.b64encode(img_data).decode()
+
+        body = {
+            "model": "qwen-vl-ocr",
+            "messages": [{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": "逐字读取合同图片中的所有汉字和数字。注意：\"三\"(三横)和\"子\"(有勾)容易混淆，\"6\"和\"0\"、\"已\"和\"己\"也容易看错，请仔细辨认每笔每画。人名、日期、金额数字必须完全准确。输出原文，不要总结。"},
+                    {"type": "image_url", "image_url": {"url": f"data:{media_type};base64,{b64}"}}
+                ]
+            }]
+        }
+
+        req = urllib.request.Request(
+            DASHSCOPE_URL,
+            data=json.dumps(body).encode('utf-8'),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {DASHSCOPE_KEY}"
+            }
+        )
+
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            result = json.loads(resp.read().decode())
+
+        if 'choices' in result and len(result['choices']) > 0:
+            text = result['choices'][0]['message']['content']
+            return text.strip()
+        return ''
+
+    except Exception as e:
+        traceback.print_exc()
+        print(f"[OCR] Error: {e}", flush=True)
+        return ''
+
+
+def parse_contract_text(raw_text: str, template_id: str) -> dict:
+    """使用 LLM 解析 OCR 文本为结构化字段数据"""
+    import subprocess
+    import tempfile
+    import json
+    import re
+
+    # 定义不同模板的字段期望
+    field_defs = {
+        'housing_lease': [
+            'name', 'landlord', 'tenant', 'property', 'monthly_rent',
+            'deposit', 'start_date', 'end_date', 'payment_day'
+        ],
+        'employment': [
+            'name', 'employer', 'employee', 'position', 'salary',
+            'start_date', 'end_date'
+        ],
+        'goods_trade': [
+            'name', 'seller', 'buyer', 'goods', 'price', 'delivery_date'
+        ],
+        'custom': ['name', 'description']
+    }
+    fields = field_defs.get(template_id, field_defs['custom'])
+
+    prompt = f"""你是一名合同信息提取专家。请从以下 OCR 识别出的合同文本中提取关键信息。
+
+目标模板: {template_id}
+需要提取的字段: {', '.join(fields)}
+
+OCR 文本:
+---
+{raw_text[:4000]}
+---
+
+请根据文本内容，提取对应字段的值。返回纯 JSON 对象，key 为字段名，value 为提取的值。
+如果某个字段在文本中找不到对应信息，value 设为空字符串。
+日期格式统一为 YYYY-MM-DD。
+数字字段只返回数字。
+
+示例输出格式:
+{{"name": "张三租房合同", "landlord": "张三", "tenant": "李四", ...}}"""
+
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False, encoding='utf-8') as f:
+        f.write(prompt)
+        prompt_file = f.name
+
+    try:
+        result = subprocess.run(
+            ['hermes', 'chat', '--profile', 'contract-doc',
+             '-q', f'Read {prompt_file} and return ONLY JSON, no explanation.'],
+            capture_output=True, text=True, timeout=120,
+            cwd=str(Path(__file__).parent)
+        )
+        os.unlink(prompt_file)
+
+        output = result.stdout.strip()
+        # 提取 JSON
+        json_match = re.search(r'\{.*\}', output, re.DOTALL)
+        if json_match:
+            parsed = json.loads(json_match.group())
+            # 只保留需要的字段
+            return {k: parsed.get(k, '') for k in fields}
+        return {k: '' for k in fields}
+    except Exception as e:
+        print(f"[OCR] LLM parse error: {e}", flush=True)
+        try:
+            os.unlink(prompt_file)
+        except:
+            pass
+        return {k: '' for k in fields}
 
 
 # ============================================================

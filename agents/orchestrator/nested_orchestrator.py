@@ -499,7 +499,7 @@ class NestedOrchestrator:
                 # 一次性读取所有输出（含超时保护）
                 try:
                     stdout_bytes, stderr_bytes = await asyncio.wait_for(
-                        proc.communicate(), timeout=300
+                        proc.communicate(), timeout=600
                     )
                     stdout_output = stdout_bytes.decode('utf-8', errors='replace') if stdout_bytes else ''
                     stderr_output = stderr_bytes.decode('utf-8', errors='replace') if stderr_bytes else ''
