@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useStore, Template, AgentStatus, EventLog } from '@/store';
+import MarkdownView from '@/components/MarkdownView';
+import SolidityViewer from '@/components/SolidityViewer';
 
 // ============================================================
 // 模板配置
@@ -662,9 +664,18 @@ function GenerationView({ agentStatuses, eventLogs, agentThoughts, agentArtifact
                 <button onClick={() => setShowArtifact(null)} style={{ background: 'none', border: 'none', color: 'var(--text-quaternary)', cursor: 'pointer', fontSize: '16px', padding: '2px 4px', borderRadius: 'var(--radius-sm)' }}
                   onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; }} onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-quaternary)'; }}>✕</button>
               </div>
-              <div style={{ flex: 1, overflow: 'auto', padding: 'var(--space-4)', maxHeight: '420px' }}>
-                <pre style={{ margin: 0, fontSize: 'var(--fs-sm)', lineHeight: '1.6', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{agentArtifacts[showArtifact]}</pre>
-              </div>
+              {showArtifact === 'doc' || showArtifact === 'tech' ? (
+                <MarkdownView
+                  content={typeof agentArtifacts[showArtifact] === 'string' ? agentArtifacts[showArtifact] : String(agentArtifacts[showArtifact])}
+                  maxHeight="420px"
+                />
+              ) : (
+                <SolidityViewer
+                  code={typeof agentArtifacts[showArtifact] === 'string' ? agentArtifacts[showArtifact] : String(agentArtifacts[showArtifact])}
+                  filename={showArtifact === 'dev' ? 'contract.sol' : 'frontend.tsx'}
+                  maxHeight="420px"
+                />
+              )}
             </div>
           )}
         </div>
@@ -721,7 +732,7 @@ function DemoView({ projectId, demoUrl, onReset, allArtifacts }: {
   const [activeTab, setActiveTab] = useState<ArtifactTab>('demo');
   const [fetching, setFetching] = useState(false);
   const setAllArtifacts = useStore((s) => s.setAllArtifacts);
-  const copyLink = () => { navigator.clipboard.writeText(demoUrl.startsWith('http') ? demoUrl : `${window.location.origin}${demoUrl}`); };
+  const copyLink = () => { copyToClipboard(demoUrl.startsWith('http') ? demoUrl : `${window.location.origin}${demoUrl}`); };
 
   // 进入 DemoView 时自动拉取产物（处理来自历史记录和新生成的场景）
   useEffect(() => {
@@ -815,7 +826,11 @@ function DemoView({ projectId, demoUrl, onReset, allArtifacts }: {
 
 // 内容区渲染
 function ContentArea({ activeTab, allArtifacts, demoUrl }: { activeTab: ArtifactTab; allArtifacts: Record<string, any>; demoUrl: string }) {
-  const renderCode = (text: string) => <pre style={{ margin: 0, fontSize: 'var(--fs-sm)', lineHeight: '1.6', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{text}</pre>;
+  const renderMarkdown = (text: string) => (
+    <div style={{ ...s.panel, padding: 0, maxHeight: '520px', display: 'flex', flexDirection: 'column' }}>
+      <MarkdownView content={text} maxHeight="520px" />
+    </div>
+  );
 
   switch (activeTab) {
     case 'demo':
@@ -826,26 +841,26 @@ function ContentArea({ activeTab, allArtifacts, demoUrl }: { activeTab: Artifact
       const req = allArtifacts?.requirement;
       if (!req) return <EmptyTab />;
       const terms = req.terms || [];
-      return <div style={{ ...s.panel, maxHeight: '520px', overflow: 'auto' }}>{renderCode([`# ${req.project_name || '未命名项目'}`, `**模板**: ${req.template}  **摘要**: ${req.summary || '无'}`,
+      return renderMarkdown([`# ${req.project_name || '未命名项目'}`, `**模板**: ${req.template}  **摘要**: ${req.summary || '无'}`,
         '', `## 参与方`, req.parties ? Object.entries(req.parties).map(([k, v]) => `  - ${k}: ${v}`).join('\n') : '  无',
         '', `## 条款`, terms.map((t: any) => `  - ${t.id} [${t.type}] ${t.description} (${t.eligible})`).join('\n') || '  无',
         '', `## 可合约化条款`, (req.contractable_terms || []).join(', ') || '无',
         '', `## 待确认条款`, (req.pending_terms || []).join(', ') || '无',
-      ].join('\n'))}</div>;
+      ].join('\n'));
     }
     case 'tech_design': {
       const td = allArtifacts?.tech_design;
       if (!td) return <EmptyTab />;
       const c = td.contracts || [], r = td.risks || [];
-      return <div style={{ ...s.panel, maxHeight: '520px', overflow: 'auto' }}>{renderCode([`# 技术设计方案`, '', `## 合约架构`, c.map((x: any) => `  - **${x.name}** (${x.type}): ${x.description}\n    方法: ${(x.functions || []).join(', ')}`).join('\n') || '  无',
+      return renderMarkdown([`# 技术设计方案`, '', `## 合约架构`, c.map((x: any) => `  - **${x.name}** (${x.type}): ${x.description}\n    方法: ${(x.functions || []).join(', ')}`).join('\n') || '  无',
         '', `## 设计模式`, (td.patterns || []).join(', ') || '无', '', `## 依赖`, (td.dependencies || []).join(', ') || '无',
         '', `## 风险评估`, r.map((x: any) => `  - ${x.type}: ${x.level} - ${x.mitigation || '无'}`).join('\n') || '  无',
-      ].join('\n'))}</div>;
+      ].join('\n'));
     }
     case 'contract':
-      return <CodeFilesPanel files={allArtifacts?.contract} />;
+      return <CodeFilesPanel files={allArtifacts?.contract} codeType="solidity" />;
     case 'frontend':
-      return <CodeFilesPanel files={allArtifacts?.frontend} />;
+      return <CodeFilesPanel files={allArtifacts?.frontend} codeType="generic" />;
     default:
       return <EmptyTab />;
   }
@@ -857,10 +872,11 @@ function EmptyTab() {
   </div>;
 }
 
-function CodeFilesPanel({ files }: { files?: { filename: string; content: string }[] }) {
+function CodeFilesPanel({ files, codeType = 'solidity' }: { files?: { filename: string; content: string }[]; codeType?: 'solidity' | 'generic' }) {
   const [sel, setSel] = useState(0);
   if (!files?.length) return <EmptyTab />;
   const current = files[Math.min(sel, files.length - 1)];
+  const isSolFile = current.filename.endsWith('.sol') || codeType === 'solidity';
   return (
     <div style={{ ...s.panel, overflow: 'hidden', padding: 0, maxHeight: '520px', display: 'flex', flexDirection: 'column' }}>
       {files.length > 1 && (
@@ -873,10 +889,62 @@ function CodeFilesPanel({ files }: { files?: { filename: string; content: string
           ))}
         </div>
       )}
-      <div style={{ flex: 1, overflow: 'auto', padding: 'var(--space-4)' }}>
-        <pre style={{ margin: 0, fontSize: 'var(--fs-sm)', lineHeight: '1.6', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{current.content}</pre>
-      </div>
+      {isSolFile ? (
+        <SolidityViewer code={current.content} filename={current.filename} maxHeight="480px" />
+      ) : (
+        <div style={{ flex: 1, overflow: 'auto', padding: 'var(--space-3)' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+            <CopyButton text={current.content} />
+          </div>
+          <pre style={{ margin: 0, fontSize: 'var(--fs-sm)', lineHeight: '1.6', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', whiteSpace: 'pre', overflow: 'auto' }}>{current.content}</pre>
+        </div>
+      )}
     </div>
+  );
+}
+
+// 跨上下文复制工具（兼容 HTTP + HTTPS）
+function copyToClipboard(text: string): Promise<void> {
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    return navigator.clipboard.writeText(text);
+  }
+  // Fallback: 创建临时 textarea
+  return new Promise((resolve, reject) => {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      resolve();
+    } catch (e) { reject(e); }
+  });
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleClick = useCallback(() => {
+    copyToClipboard(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }).catch(() => {});
+  }, [text]);
+  return (
+    <button onClick={handleClick}
+      style={{
+        padding: '3px 10px', borderRadius: 'var(--radius-sm)', border: 'none', cursor: 'pointer',
+        fontSize: '11px', fontWeight: 500,
+        color: copied ? 'var(--status-completed)' : 'var(--text-tertiary)',
+        background: copied ? 'var(--status-completed-bg)' : 'transparent',
+        transition: 'all 0.15s',
+      }}
+      onMouseEnter={(e) => { if (!copied) e.currentTarget.style.color = 'var(--text-secondary)'; }}
+      onMouseLeave={(e) => { if (!copied) e.currentTarget.style.color = 'var(--text-tertiary)'; }}
+    >{copied ? '✓ 已复制' : '📋 复制'}</button>
   );
 }
 
